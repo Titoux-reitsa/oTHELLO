@@ -1,0 +1,2 @@
+# oTHELLO
+Othello GAME + BOT
