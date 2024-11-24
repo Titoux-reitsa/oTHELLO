@@ -52,7 +52,7 @@ int main(){
 
             played = Is_possible(plateau, ligne, column, Indice_tab_player, Possible_vect);
             //condition pour passer son tour si le joueur rentre -1 -1 en ligne colonne
-            if(ligne = -1 && colonne = -1){
+            if(ligne == -1 && column == -1){
                 Indice_tab_player = (Indice_tab_player + 1)%2;
             }
             if (played) {
