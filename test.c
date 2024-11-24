@@ -1,136 +1,166 @@
-#include <stdio.h>
+#include <stdio.h> 
+#include <stdlib.h> 
+#include <stdint.h> 
+#include <errno.h>
 #include <stdbool.h>
 #include "fonctions.h"
 
-/*-------------------------------------------------------------------------*/
+#define N 8 
+#define BLACK 1 
+#define WHITE 0 
+#define EMPTY 2 
 
-void Init_tab(int plateau[Lenght_tab][Lenght_tab]) { 
-    for(int i = 0; i < 8; i++){
-        for(int j = 0; j < 8; j ++){
-            plateau[i][j] = (-1);
-        }
-    }
-    plateau[3][3] = 1;
-    plateau[3][4] = 0;
-    plateau[4][3] = 0;
-    plateau[4][4] = 1;
+//#define CONVENTIONOK 
+
+#ifdef CONVENTIONOK 
+typedef int8_t monType ;
+#else 
+typedef int32_t monType;
+#define MYBLACK 0
+#define MYWHITE 1
+#define MYEMPTY -1
+#endif 
+
+
+// Assume we have a function that modifies our board 
+int faireCoupOthello(monType tableau[N][N],int8_t coup,int8_t couleur) {
+	int ligne = coup /8;
+	int column = coup %8;
+	
+	int Possible_vect[8][2]= {{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}};
+	
+	bool played = Is_possible(tableau, ligne, column, couleur, Possible_vect);
+
+	if (played) {
+		swap(tableau, ligne, column, couleur, Possible_vect);
+	}
+	for(int i =0; i< 8 ;i++){
+		printf("(%d , %d)  ",Possible_vect[i][0],Possible_vect[i][1]);
+	}
+	return 0;
 }
 
-/*-------------------------------------------------------------------------*/
 
-void Print_tab(int plateau[Lenght_tab][Lenght_tab]){ 
-    printf("  0 1 2 3 4 5 6 7");
-    printf("\n");
-    for(int i = 0; i < 8; i++){
-        printf("%d ",i);
-        for(int j = 0; j < 8; j ++){
-            if (plateau[i][j] == 0) printf("N ");
-            else if (plateau[i][j] == 1) printf("B ");
-            else printf("+ ");
-        }
-        printf("\n");
-    }
-}
-
-/*-------------------------------------------------------------------------*/
-
-bool Is_empty(int plateau[Lenght_tab][Lenght_tab], int ligne, int column){ 
-    return (plateau[ligne][column] == (-1));
-}
-
-/*-------------------------------------------------------------------------*/
-
-bool Tab_is_empty(int plateau[Lenght_tab][Lenght_tab], int Indice_player, int Possible_vect[8][2]){
-    for (int init = 0; init < 8 ; init++){
-        Possible_vect[init][0] = 0;
-        Possible_vect[init][1] = 0;
-    }
-    for (int i = 0; i<8; i++){
-        for (int j = 0; j<8; j++){
-            if (Is_empty(plateau, i , j)){
-                if (Is_possible(plateau, i, j, Indice_player, Possible_vect)) return 0;
-            }
-        }
-    }
-    return 1;
-}
-
-/*-------------------------------------------------------------------------*/
-
-bool Is_possible(int plateau[Lenght_tab][Lenght_tab], int i, int j, int Indice_player, int Possible_vect[8][2]){
-
-    bool possible = false;
-    int nb_of_possible_vec=0;
-    int Vect[8][2] = {{0,-1},{-1,-1},{-1,0},{-1,1},{0,1},{1,1},{1,0},{1,-1}};
-
-    if (Is_empty(plateau,i,j)){
-        for (int i_vect = 0; i_vect < 8; i_vect++){
-            int pos_ligne = Vect[i_vect][0]+i;
-            int pos_column = Vect[i_vect][1]+j;
-
-            bool end = true;
-            bool in_boucle=false;
-
-            if(pos_ligne >= 0 && pos_ligne <= 7 && pos_column >= 0 && pos_column <= 7){
-                end = false;
-            }
-            while (plateau[pos_ligne][pos_column] != Indice_player && plateau[pos_ligne][pos_column] != (-1) && end == false){
-                in_boucle=true;
-                    pos_ligne += Vect[i_vect][0];
-                    pos_column += Vect[i_vect][1];
-                if(!(pos_ligne >= 0 && pos_ligne <= 7 && pos_column >= 0 && pos_column <= 7)){
-                    end = true;
-                }
-                
-            }
-            
-            if ((plateau[pos_ligne][pos_column] == Indice_player) && (in_boucle==true) && end==false){
-                Possible_vect[nb_of_possible_vec][0] = Vect[i_vect][0];
-                Possible_vect[nb_of_possible_vec][1] = Vect[i_vect][1];
-                nb_of_possible_vec++;
-                possible = true;
-            }
-        }
-    }
-    return possible;
-}
-
-/*-------------------------------------------------------------------------*/
-
-void swap(int plateau[Lenght_tab][Lenght_tab], int i, int j, int Indice_player, int Possible_vect[8][2]){
-    int cmpt=0;
-    plateau[i][j]=  Indice_player ; 
-    while((Possible_vect[cmpt][0]!=0 || Possible_vect[cmpt][1]!=0) && cmpt < 8){
-        cmpt++;
-    }
-    for(int nb_ligne_retourne=0 ; nb_ligne_retourne < cmpt ; nb_ligne_retourne++){
-        int di = Possible_vect[nb_ligne_retourne][0];
-        int dj = Possible_vect[nb_ligne_retourne][1];
-        int pos_ligne= i+ di;
-        int pos_column = j + dj;
-        while(plateau[pos_ligne][pos_column]!= Indice_player){
-            plateau[pos_ligne][pos_column] =  Indice_player ; 
-            pos_ligne += di;
-            pos_column += dj;
-        }
-    }
+void afficheTableau(monType tableau[N][N]) 
+{
+	for (int i=0;i<N;i++) {
+		for (int j=0;j<N;j++) {
+			printf("%c ",tableau[i][j]==2?'.':'0'+tableau[i][j]); 
+		} 
+		printf("\n"); 
+	}
+	printf("\n\n\n"); 
 
 }
 
-/*--------------------------------------------------------------------------*/
-
-/*Retourne 0 si les pions noirs ont gagné, 1 pour les blancs et -1 sinon*/
-int Who_win(int plateau[Lenght_tab][Lenght_tab]){
-    int N = 0;
-    int B = 0;
-    int winner = -1;
-    for (int i = 0; i<Lenght_tab; i++){
-        for (int j = 0; j<Lenght_tab; j++){
-            if (plateau[i][j] == 0) N++;
-            else if (plateau[i][j] == 1) B++;
-        }
-    }
-    if (N>B) winner = 0;
-    else if (B>N) winner = 1;
-    return winner;
+int dansTableau(int i, int j) 
+{
+	return ((i>=0) && (i<N) && (j>=0) && (j<N)); 
 }
+
+/*
+int faireCoupOthello(monType tableau[N][N],int8_t coup,int8_t couleur) 
+{
+	int dirs[8][2]={{-1,-1},{-1,0},{-1,1},{0,-1},{0,1},{1,-1},{1,0},{1,1}}; 
+	int retournes=0; 
+	int i,j; 
+	// on recupere la ligne et la colonne de coup dans i et j 
+	i=coup/N; 
+	j=coup%N; 
+
+	if (dansTableau(i,j)) {
+	// pour toutes les directions
+		for (int d=0;d<8;d++) {
+			int x,y,v=0; 
+			x=i+dirs[d][0]; 
+			y=j+dirs[d][1]; 
+	// on avance tant qu'on est dans le tableau et que le pion est adverse 
+			while (dansTableau(x,y) && (tableau[x][y]==(!couleur))) {
+				x+=dirs[d][0]; 
+				y+=dirs[d][1]; 
+				v++; 
+			}
+	// si on est toujours dans le tableau et qu'on a avancé alors la piece doit ausi etre de notre couleur 
+			if (dansTableau(x,y) && (v!=0) && (tableau[x][y]==couleur)) {
+				retournes+=v; 
+				for (int w=0;w<=v;w++) {
+					tableau[i+w*dirs[d][0]][j+w*dirs[d][1]]=couleur; 
+				}
+			}
+				
+		}
+	}
+	return retournes; 
+}
+*/
+int lireCoup(int8_t *coup,int8_t *couleur, FILE *savedGames) 
+{
+	int res=0; 
+	res=fread(coup,sizeof(int8_t),1,savedGames); 
+	if (res) res=fread(couleur,sizeof(int8_t),1,savedGames); 
+#ifndef CONVENTIONOK 
+	*couleur=(*couleur==BLACK)?MYBLACK:MYWHITE; 
+#endif 
+	return res; 
+}
+
+int lireTableau(monType tableau[N][N], FILE *savedGames) 
+{
+	int res; 
+#ifdef CONVENTIONOK 
+	res=fread(tableau,sizeof(int8_t),64,savedGames); 
+#else 
+	int8_t temp[N][N]; 
+	res=fread(temp,sizeof(int8_t),64,savedGames); 
+	for (int i=0;i<N*N;i++) {
+		tableau[i/8][i%8]=((temp[i/8][i%8]==BLACK)?MYBLACK:(temp[i/8][i%8]==WHITE)?MYWHITE:MYEMPTY); 
+	}
+#endif 
+	return res; 
+}
+int compareTableau(monType tableau[N][N],monType reference[N][N]) 
+{
+	int erreur=0; 
+	for (int i=0;i<64;i++) { 
+		erreur+=(tableau[i/8][i%8]!=reference[i/8][i%8]); 
+	}
+	return erreur; 
+}
+
+
+int main(int argc, char *argv[])
+{
+	// tableau before and after (ie. expected after) 
+	monType monTableau[N][N]; // 1 Black, 0 white , 2 empty 
+	monType after[N][N]; 
+	int8_t  c,p; // coup de 0 à 63 pour un coup valide, 64 pour PASS. 
+		     // p player (1 Black, 0 white) 
+	int errors=0,nberrors=0; 
+	int nbtest=0; 
+	FILE *fi; 
+
+	if (argc<2) { printf("%s <file>\n",argv[0]); exit (1); } 
+	if ((fi=fopen(argv[1],"r"))!=NULL) {
+		while (lireTableau(monTableau,fi)) {
+			nbtest++; 
+			printf("tableau initial\n"); 
+			afficheTableau(monTableau); 
+			lireCoup(&c,&p,fi); 
+			lireTableau(after,fi); 
+			faireCoupOthello(monTableau,c,p);
+			printf("coup de %d en %d %d\n",p,c/8,c%8); 
+			printf("tableau ref\n"); 
+			afficheTableau(after); 
+			afficheTableau(monTableau); 
+			if ((errors=compareTableau(monTableau,after))) { 
+				printf("%d error(s) in test %d\n",errors,nbtest);
+		       		nberrors+=errors;
+			}
+		}
+	fclose(fi); 
+	} else {
+		perror("cannot open file"); 
+	}
+	printf("J'ai détecté %d Erreur(s)\n",nberrors); 
+}
+
