@@ -7,8 +7,6 @@
 
 int main(int argc,char *argv[]) 
 {
-	int ligne=0;
-	int colone=0;
 	game *g;
 	int move; 
 
@@ -49,8 +47,8 @@ int main(int argc,char *argv[])
 						
 						int Possible_vect[8][2]= {{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}};
 						
-						Is_possible(plateau, g->move%8, g->move/8, !(g->currentPlayer), Possible_vect);
-						swap(plateau, g->move%8, g->move/8, !(g->currentPlayer), Possible_vect);
+						Is_possible(plateau, g->move/8, g->move%8, !(g->currentPlayer), Possible_vect);
+						swap(plateau, g->move/8, g->move%8, !(g->currentPlayer), Possible_vect);
 						Print_tab(plateau);
 					}
 					
@@ -61,9 +59,8 @@ int main(int argc,char *argv[])
 			g->move=65; // si scanf correct cette valeur est modifiée, sinon cela terminera la partie. 
 			// recuperation du coup sur stdin 
 			printf("Enter your move:\n");
-			scanf("ligne %d",&(ligne)); 
-			scanf("colonne %d",&(colone)); 
-			g->move=ligne*8 + colone;
+			scanf("%d",&(g->move)); 
+			
 
 			printf("playing move %d (x=%d,y=%d)\n",g->move,g->move%8,g->move/8);
 			
