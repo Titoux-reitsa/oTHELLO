@@ -17,6 +17,6 @@ void swap(int plateau[Lenght_tab][Lenght_tab], int i, int j, int Indice_player, 
 int Who_win(int plateau[Lenght_tab][Lenght_tab]);
 
 // Fonctions de IA.c
-int IA(int plateau[Lenght_tab][Lenght_tab], int Indice_player);
+int IA(int plateau[Lenght_tab][Lenght_tab], int Indice_player,int coup_nul[2]);
 
 // Fonctions de test.c
