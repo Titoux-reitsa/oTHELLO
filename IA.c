@@ -25,13 +25,9 @@ int anal_tab_pontos(int plateau[8][8],int couleur){
             }
         }
     }
-    printf("score = %d\n",score);
     return score;
 }
-int IA(int plateau[Lenght_tab][Lenght_tab], int Indice_player,int my_color, int coup_nul[2],int profondeur){
-    int coup_temp_point=coup_nul[1];
-    int coup_temp=coup_nul[0];
-   
+int IA(int plateau[Lenght_tab][Lenght_tab], int Indice_player,int my_color, int coup_nul[2],int profondeur){   
         if(profondeur>0){
             int new_tab[8][8]; 
             for(int k=0;k<8;k++){
@@ -39,12 +35,18 @@ int IA(int plateau[Lenght_tab][Lenght_tab], int Indice_player,int my_color, int 
                     new_tab[k][l]=plateau[k][l];
                 }
             }
-            coup_nul[0]=IA(new_tab,Indice_player,my_color,coup_nul,profondeur-1);
-            printf("%d profondeur",profondeur);
-            int Possible_vect[8][2]= {{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}};
-            int play=Is_possible(new_tab, coup_nul[0]%8, coup_nul[0]/8, Indice_player, Possible_vect);
-            if(play>0){swap(new_tab, coup_nul[0]%8, coup_nul[0]/8, Indice_player, Possible_vect);}
-            best_move(new_tab,Indice_player,coup_nul);
+            coup_nul[0]=64;
+            for(int k=0;k<8;k++){
+                for(int l=0;l<8;l++){
+                    int Possible_vect[8][2] = { {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0} };
+                    int play=Is_possible(new_tab, k, l, Indice_player, Possible_vect);
+                        if(play>0){
+                            coup_nul[0]=k*8+l;
+                            coup_nul[0]=IA(new_tab,Indice_player,my_color,coup_nul,profondeur-1);
+                        }
+                }
+
+            }
             return coup_nul[0];
         }
             
