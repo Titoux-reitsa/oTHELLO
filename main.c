@@ -41,20 +41,19 @@ int main(){
         }
         else {
             
-            printf("\n");
+            /*printf("\n");
             printf("C'est au tour des pions %c\n", tab_player[Indice_tab_player]);
             printf("Rentrer ligne : ");
             scanf("%d", &ligne); // Rentrer ligne : 
             printf("Rentrer colone : ");
             scanf("%d", &column); // Rentrer colone : 
-            printf("\n");
-
-
+            printf("\n");*/
+            int coup_nul[2];
+            int tmp = best_move(plateau,Indice_tab_player,coup_nul);
+            ligne=tmp/8;
+            column=tmp%8;
             played = Is_possible(plateau, ligne, column, Indice_tab_player, Possible_vect);
-            //condition pour passer son tour si le joueur rentre -1 -1 en ligne colonne
-            if(ligne == -1 && column == -1){
-                Indice_tab_player = (Indice_tab_player + 1)%2;
-            }
+
             if (played) {
                 swap(plateau, ligne, column, Indice_tab_player, Possible_vect);
             }
