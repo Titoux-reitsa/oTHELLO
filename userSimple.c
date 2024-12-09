@@ -61,7 +61,7 @@ int main(int argc,char *argv[])
 			printf("Enter your move:\n");
 			//scanf("%d",&(g->move)); 
 			int coup_nul[2];
-			int nb_forward_play=50;
+			int nb_forward_play=6;
 			g->move=IA(plateau, !(g->currentPlayer), !(g->myColor),coup_nul,nb_forward_play);
 
 			printf("playing move %d (x=%d,y=%d)\n",g->move,g->move%8,g->move/8);
